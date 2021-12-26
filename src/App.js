@@ -9,8 +9,9 @@ import {
 	orderBy,
 	limit,
 	serverTimestamp,
-	deleteDoc,
+	getDocs,
 	doc,
+	deleteDoc,
 } from "firebase/firestore";
 import {
 	getAuth,
@@ -22,7 +23,8 @@ import {
 
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useCollectionData } from "react-firebase-hooks/firestore";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import Loader from "./components/Loader";
 
 const app = initializeApp({
 	apiKey: "AIzaSyBg3sIu9AhErqy-T696JsQohreO7fBYWMU",
@@ -39,17 +41,6 @@ const firestoreDb = getFirestore();
 
 function App() {
 	const [user] = useAuthState(auth);
-
-	const deleteAll = () => {
-		//const messagesRef = collection(firestoreDb, "messages");
-		const messagesRef = doc(firestoreDb, "messages");
-		deleteDoc(messagesRef)
-			.then((res) => {
-				console.log("borrado correctamente");
-				console.log(res);
-			})
-			.catch((error) => console.log(error.errorMessage));
-	};
 	return (
 		<div className="App">
 			<header className="App-header"></header>
@@ -73,7 +64,7 @@ function App() {
 				</section>
 			)}
 			<SignOut />
-			<button onClick={deleteAll}>borrar</button>
+			{/* 	<button onClick={deleteAll}>borrar</button> */}
 		</div>
 	);
 }
@@ -83,7 +74,6 @@ function SignIn() {
 		const provider = new GoogleAuthProvider();
 		/* provider.addScope("profile");
 		provider.addScope("email"); */
-		console.log(`proveedor: ${provider}`);
 		signInWithPopup(auth, provider)
 			.then((result) => {
 				// This gives you a Google Access Token. You can use it to access the Google API.
@@ -91,9 +81,7 @@ function SignIn() {
 				const token = credential.accessToken;
 				// The signed-in user info.
 				const user = result.user;
-				console.log(`Credenciales: ${credential.keys}.... 
-                   Token: ${token}......
-                   usuario: ${user.keys}.....`);
+				console.log(user.displayName);
 				// ...
 			})
 			.catch((error) => {
@@ -120,17 +108,46 @@ function SignIn() {
 }
 
 function SignOut() {
-	const signOutUser = () => {
-		const auth = getAuth();
-		signOut(auth)
-			.then(() => {
-				// Sign-out successful.
-				console.log("Sign-out successful.");
-			})
-			.catch((error) => {
-				// An error happened.
-				console.log("An error happened.");
-			});
+	const signOutUser = async () => {
+		//const auth = getAuth();
+		const isDeleteMessage = window.confirm(
+			`Si usted es el usuario Owner puede borrar toda la conversacion al salir. Desea borrar todos los mensajes al salir?`
+		);
+		let delaySignOut = 100;
+		if (
+			isDeleteMessage &&
+			auth.currentUser.uid === "Mqwg0IrWTEZDJmsfLtpJ6HTqAvT2"
+		) {
+			delaySignOut = 4000;
+			try {
+				const messagesCollectionRef = collection(firestoreDb, "messages");
+				const q = query(
+					messagesCollectionRef,
+					orderBy("createdAt", "desc"),
+					limit(25)
+				);
+				const docs = await getDocs(q);
+				docs.forEach(async (el) => {
+					await deleteDoc(doc(firestoreDb, "messages", el.id));
+					console.log(`borrado id ${el.id}`);
+				});
+			} catch (error) {
+				console.log("errores al borrar" + error);
+			}
+		}
+		setTimeout(
+			() =>
+				signOut(auth)
+					.then(() => {
+						// Sign-out successful.
+						console.log("Sign-out successful.");
+					})
+					.catch((error) => {
+						// An error happened.
+						console.log("An error happened.");
+					}),
+			delaySignOut
+		);
 	};
 
 	return (
@@ -143,46 +160,63 @@ function SignOut() {
 }
 
 function ChatRoom() {
-	const messagesRef = collection(firestoreDb, "messages");
+	const messagesCollectionRef = collection(firestoreDb, "messages");
 
-	const q = query(messagesRef, orderBy("createdAt", "desc"), limit(25));
+	const q = query(
+		messagesCollectionRef,
+		orderBy("createdAt", "desc"),
+		limit(25)
+	);
 
 	const [messages, loading, errorStore] = useCollectionData(q, {
 		idField: "id",
 	});
 
+	useEffect(() => {
+		scrollingVisibleTrick.current.scrollIntoView({ behavior: "smooth" });
+	}, [messages]);
+	const [isLoading, setIsLoading] = useState(false);
+
 	const scrollingVisibleTrick = useRef();
 
 	const [formValue, setFormValue] = useState("");
-	console.log(messages);
-	console.log(errorStore);
 
 	const sendMessage = async (e) => {
 		e.preventDefault();
+		if (!formValue) return;
 		const { uid, photoURL } = auth.currentUser;
 
-		console.log(auth.currentUser);
+		//console.log(auth.currentUser);
 
-		await addDoc(messagesRef, {
+		setIsLoading(true);
+		await addDoc(messagesCollectionRef, {
 			text: formValue,
 			createdAt: serverTimestamp(),
 			uid,
 			photoURL,
 		});
+		setIsLoading(false);
 		setFormValue("");
 		scrollingVisibleTrick.current.scrollIntoView({ behavior: "smooth" });
 	};
 
 	return (
 		<>
-			<main>
+			<main style={{ position: "relative" }}>
 				{messages &&
-					messages.map((msg) => <ChatMessage key={msg.id} message={msg} />)}
+					messages
+						.map((msg) => msg && <ChatMessage key={msg.id} message={msg} />)
+						.reverse()}
 				{errorStore && <ChatMessage message={errorStore} />}
 				<div
 					ref={scrollingVisibleTrick}
 					className="scrolling-visible-div"
 				></div>
+				{isLoading && (
+					<div className="loader">
+						<Loader />
+					</div>
+				)}
 			</main>
 			<div className="write-area-container">
 				<form onSubmit={sendMessage} className="input-area">
@@ -203,14 +237,16 @@ function ChatRoom() {
 function ChatMessage({ message }) {
 	const { text, uid, photoURL } = message;
 
-	const messageClass = uid === auth.currentUser.uid ? "sent" : "received";
+	if (auth) {
+		const messageClass = auth.currentUser.uid === uid ? "sent" : "received";
 
-	return (
-		<div className={`message ${messageClass}`}>
-			<img src={photoURL} alt="User" />
-			<p>{text}</p>
-		</div>
-	);
+		return (
+			<div className={`message ${messageClass}`}>
+				<img src={photoURL} alt="User" />
+				<p>{text}</p>
+			</div>
+		);
+	}
 }
 
 export default App;
