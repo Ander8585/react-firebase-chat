@@ -92,10 +92,10 @@ function SignIn() {
 				const email = error.email;
 				// The AuthCredential type that was used.
 				const credential = GoogleAuthProvider.credentialFromError(error);
-				console.log(`Credenciales: ${credential}....
+				/* console.log(`Credenciales: ${credential}....
         Codigo de Error: ${errorCode}......
         Mensaje de error: ${errorMessage}.....
-        email: ${email}`);
+        email: ${email}`); */
 				// ...
 			});
 	};
@@ -171,15 +171,19 @@ function ChatRoom() {
 	const [messages, loading, errorStore] = useCollectionData(q, {
 		idField: "id",
 	});
-
-	useEffect(() => {
-		scrollingVisibleTrick.current.scrollIntoView({ behavior: "smooth" });
-	}, [messages]);
 	const [isLoading, setIsLoading] = useState(false);
+	const [textareaRowsNumber, setTextareaRowsNumber] = useState(1);
+	const [formValue, setFormValue] = useState("");
 
 	const scrollingVisibleTrick = useRef();
+	const textAreaRef = useRef();
 
-	const [formValue, setFormValue] = useState("");
+	useEffect(() => {
+		scrollingVisibleTrick.current.scrollIntoView({
+			block: "end",
+			behavior: "smooth",
+		});
+	}, [messages]);
 
 	const sendMessage = async (e) => {
 		e.preventDefault();
@@ -197,7 +201,27 @@ function ChatRoom() {
 		});
 		setIsLoading(false);
 		setFormValue("");
+		setTextareaRowsNumber(1);
 		scrollingVisibleTrick.current.scrollIntoView({ behavior: "smooth" });
+	};
+
+	const changeTextArea = (e) => {
+		const maxCharsInOneLine = 36; //maximun in one line
+		const linesArray = e.target.value.split("\n");
+		let charLines = 0;
+
+		linesArray.forEach((el) => {
+			if (el.length > maxCharsInOneLine) {
+				charLines += el.length / (maxCharsInOneLine + 1);
+			}
+		});
+		charLines += linesArray.length;
+		setFormValue(e.target.value);
+		setTextareaRowsNumber(charLines <= 3 ? charLines : 3);
+	};
+
+	const keyDownTextArea = (e) => {
+		if (e.key === "Enter" && !e.shiftKey) sendMessage(e);
 	};
 
 	return (
@@ -220,14 +244,32 @@ function ChatRoom() {
 			</main>
 			<div className="write-area-container">
 				<form onSubmit={sendMessage} className="input-area">
-					<input
+					<textarea
 						type="text"
 						value={formValue}
-						onChange={(e) => {
-							setFormValue(e.target.value);
-						}}
+						onChange={changeTextArea}
+						onKeyDown={keyDownTextArea}
+						rows={textareaRowsNumber}
+						ref={textAreaRef}
 					/>
-					<button type="submit">✔</button>
+
+					<button type="submit">
+						<svg
+							aria-hidden="true"
+							focusable="false"
+							data-prefix="fas"
+							data-icon="paper-plane"
+							class="svg-inline--fa fa-paper-plane fa-w-16"
+							role="img"
+							xmlns="http://www.w3.org/2000/svg"
+							viewBox="0 0 512 512"
+						>
+							<path
+								fill="currentColor"
+								d="M476 3.2L12.5 270.6c-18.1 10.4-15.8 35.6 2.2 43.2L121 358.4l287.3-253.2c5.5-4.9 13.3 2.6 8.6 8.3L176 407v80.5c0 23.6 28.5 32.9 42.5 15.8L282 426l124.6 52.2c14.2 6 30.4-2.9 33-18.2l72-432C515 7.8 493.3-6.8 476 3.2z"
+							/>
+						</svg>
+					</button>
 				</form>
 			</div>
 		</>
