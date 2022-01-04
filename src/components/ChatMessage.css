@@ -1,0 +1,71 @@
+.message {
+  display: flex;
+  gap: 0.2rem;
+  align-items: flex-start;
+  margin-top: 0.5rem;
+}
+
+.message.sent {
+  flex-direction: row-reverse;
+  padding-right: 0.5rem;
+  margin-right: 0;
+}
+
+.message.received {
+  flex-direction: row;
+  padding-left: 0.5rem;
+  margin-left: 0;
+}
+
+.message .message-text {
+  padding: 0.1rem 0.4rem;
+  border-radius: 0.7rem;
+  max-width: 80%;
+  min-width: 100px;
+  width: fit-content;
+  height: auto;
+  overflow-wrap: break-word;
+  box-shadow: 0.1rem 0.1rem 0.2rem rgba(0, 0, 0, 0.25);
+  font-size: 0.9rem;
+  white-space: pre-line;
+  margin-top: 0;
+}
+
+.message .message-text-container {
+  margin: 0;
+  width: fit-content;
+  display: flex;
+  flex-direction: column;
+}
+
+.sent .message-text-container {
+  align-items: flex-end;
+}
+
+.received .message-text-container {
+  align-items: flex-start;
+}
+
+.message .message-owner-name {
+  font-size: 0.7rem;
+  background-color: transparent;
+  margin: 0.1rem 0;
+  width: fit-content;
+}
+
+.message img {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  box-shadow: 0.1rem 0.1rem 0.2rem rgba(0, 0, 0, 0.25);
+}
+
+.sent .message-text{
+  background-color: rgba(220, 248, 198, 0.8);
+  border-top-right-radius: 0;
+}
+
+.received .message-text {
+  background-color: rgba(255, 255, 255, 0.8);
+  border-top-left-radius: 0;
+}

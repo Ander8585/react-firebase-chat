@@ -1,3 +1,5 @@
+import "./ChatMessage.css";
+
 function ChatMessage({ auth, message }) {
 	const { text, uid, photoURL, displayName } = message;
 

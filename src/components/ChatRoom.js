@@ -1,3 +1,4 @@
+import "./ChatRoom.css";
 import { useEffect, useRef, useState } from "react";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 import ChatMessage from "./ChatMessage";
@@ -115,11 +116,11 @@ function ChatRoom({ firestoreDb, auth }) {
 
 					<button type="submit">
 						<svg
-							aria-hidden="true"
+							ariaHidden="true"
 							focusable="false"
-							data-prefix="fas"
-							data-icon="paper-plane"
-							class="svg-inline--fa fa-paper-plane fa-w-16"
+							dataPrefix="fas"
+							dataIcon="paper-plane"
+							className="svg-inline--fa fa-paper-plane fa-w-16"
 							role="img"
 							xmlns="http://www.w3.org/2000/svg"
 							viewBox="0 0 512 512"

@@ -1,0 +1,74 @@
+.loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.input-area {
+  width: 100%;
+  display: flex;
+  gap: .5rem;
+  justify-content: center;
+  align-items: center;
+  
+  
+}
+
+.input-area textarea{
+  max-width: 28rem;
+  min-width: 300px;
+  width: 20rem;
+  /* flex-grow: 1; */
+  /* border: thin solid rgb(82, 68, 56); */
+  border: none;
+  border-right: none;
+  border-radius: 1rem;
+  padding: .5rem;
+  line-height: 0.85rem;
+  font-size: 0.85rem;
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: bold;
+  resize: none;
+  
+}
+
+.input-area textarea:focus-visible {
+  outline: none;
+}
+
+.input-area button{
+  width: 2rem;
+  /* border: thin solid rgb(82, 68, 56); */
+  border: none;
+  /* border-radius: 0 1.06rem 1.06rem 0; */
+  color: rgb(184, 168, 153);
+  background-color: none;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.input-area svg {
+  height: 1.5rem;
+}
+
+.scrolling-visible-div {
+  height: 5.5rem;
+}
+.write-area-container {
+  padding: 1.5rem;
+  position:fixed;
+  bottom: 0;
+  width: 100%;
+  display: flex;
+  align-content: center;
+  align-items: center;
+  background-color: rgb(240, 240, 240);
+  border-top: thin solid rgb(82, 68, 56);
+  max-width: 550px;
+}
