@@ -1,8 +1,6 @@
 import {
-	getAuth,
-	signOut,
 	signInWithPopup,
-	signInWithRedirect,
+	/* signInWithRedirect, */
 	GoogleAuthProvider,
 } from "firebase/auth";
 
@@ -14,8 +12,8 @@ function SignInButton({ auth }) {
 		signInWithPopup(auth, provider)
 			.then((result) => {
 				// This gives you a Google Access Token. You can use it to access the Google API.
-				const credential = GoogleAuthProvider.credentialFromResult(result);
-				const token = credential.accessToken;
+				//const credential = GoogleAuthProvider.credentialFromResult(result);
+				//const token = credential.accessToken;
 				// The signed-in user info.
 				const user = result.user;
 				console.log(user.displayName);
@@ -29,10 +27,10 @@ function SignInButton({ auth }) {
 				const email = error.email;
 				// The AuthCredential type that was used.
 				const credential = GoogleAuthProvider.credentialFromError(error);
-				/* console.log(`Credenciales: ${credential}....
+				console.log(`Credenciales: ${credential}....
         Codigo de Error: ${errorCode}......
         Mensaje de error: ${errorMessage}.....
-        email: ${email}`); */
+        email: ${email}`);
 				// ...
 			});
 	};

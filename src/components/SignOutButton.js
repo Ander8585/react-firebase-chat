@@ -1,22 +1,13 @@
 import {
-	getFirestore,
-	addDoc,
 	collection,
 	query,
 	orderBy,
 	limit,
-	serverTimestamp,
 	getDocs,
 	doc,
 	deleteDoc,
 } from "firebase/firestore";
-import {
-	getAuth,
-	signOut,
-	signInWithPopup,
-	signInWithRedirect,
-	GoogleAuthProvider,
-} from "firebase/auth";
+import { signOut } from "firebase/auth";
 
 function SignOutButton({ auth, firestoreDb }) {
 	const signOutUser = async () => {

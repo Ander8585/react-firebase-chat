@@ -3,16 +3,12 @@ import { useCollectionData } from "react-firebase-hooks/firestore";
 import ChatMessage from "./ChatMessage";
 import Loader from "./Loader";
 import {
-	getFirestore,
 	addDoc,
 	collection,
 	query,
 	orderBy,
 	limit,
 	serverTimestamp,
-	getDocs,
-	doc,
-	deleteDoc,
 } from "firebase/firestore";
 
 function ChatRoom({ firestoreDb, auth }) {
@@ -24,7 +20,7 @@ function ChatRoom({ firestoreDb, auth }) {
 		limit(50)
 	);
 
-	const [messages, loading, errorStore] = useCollectionData(q, {
+	const [messages, /* loading, */ errorStore] = useCollectionData(q, {
 		idField: "id",
 	});
 	const [isLoading, setIsLoading] = useState(false);

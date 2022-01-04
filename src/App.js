@@ -1,34 +1,15 @@
 import "./App.css";
 import { initializeApp } from "firebase/app";
-import {
-	getFirestore,
-	addDoc,
-	collection,
-	query,
-	orderBy,
-	limit,
-	serverTimestamp,
-	getDocs,
-	doc,
-	deleteDoc,
-} from "firebase/firestore";
-import {
-	getAuth,
-	signOut,
-	signInWithPopup,
-	signInWithRedirect,
-	GoogleAuthProvider,
-} from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 
 import { useAuthState } from "react-firebase-hooks/auth";
-import { useCollectionData } from "react-firebase-hooks/firestore";
-import { useEffect, useRef, useState } from "react";
 import ChatRoom from "./components/ChatRoom";
 import ChatHeader from "./components/ChatHeader";
 import SignInButton from "./components/SignInButton";
 import SignOutButton from "./components/SignOutButton";
 
-const app = initializeApp({
+initializeApp({
 	apiKey: "AIzaSyBg3sIu9AhErqy-T696JsQohreO7fBYWMU",
 	authDomain: "mis-usuarios-64b43.firebaseapp.com",
 	projectId: "mis-usuarios-64b43",
