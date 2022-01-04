@@ -43,10 +43,14 @@ function App() {
 	const [user] = useAuthState(auth);
 	return (
 		<div className="App">
-			<header className="App-header"></header>
-
 			{user ? (
 				<section className="main-area">
+					<header className="App-header">
+						<h1>
+							Welcome to <br /> <span style={{ color: "#00d1f7" }}>React</span>{" "}
+							<span style={{ color: "#f7a212" }}>Firebase</span> Chat
+						</h1>
+					</header>
 					<ChatRoom />
 				</section>
 			) : (
@@ -127,10 +131,23 @@ function SignOut() {
 					limit(25)
 				);
 				const docs = await getDocs(q);
-				docs.forEach(async (el) => {
-					await deleteDoc(doc(firestoreDb, "messages", el.id));
-					console.log(`borrado id ${el.id}`);
-				});
+
+				const deleteAllDocs = (docs) =>
+					docs.forEach(async (el) => {
+						await deleteDoc(doc(firestoreDb, "messages", el.id));
+						console.log(`borrado id ${el.id}`);
+					});
+
+				await deleteAllDocs(docs);
+				await signOut(auth)
+					.then(() => {
+						// Sign-out successful.
+						console.log("Sign-out successful.");
+					})
+					.catch((error) => {
+						// An error happened.
+						console.log("An error happened.");
+					});
 			} catch (error) {
 				console.log("errores al borrar" + error);
 			}
@@ -165,7 +182,7 @@ function ChatRoom() {
 	const q = query(
 		messagesCollectionRef,
 		orderBy("createdAt", "desc"),
-		limit(25)
+		limit(50)
 	);
 
 	const [messages, loading, errorStore] = useCollectionData(q, {
@@ -187,10 +204,10 @@ function ChatRoom() {
 
 	const sendMessage = async (e) => {
 		e.preventDefault();
-		if (!formValue) return;
-		const { uid, photoURL } = auth.currentUser;
+		if (!formValue.trim()) return;
+		const { uid, photoURL, displayName } = auth.currentUser;
 
-		//console.log(auth.currentUser);
+		console.log(auth.currentUser);
 
 		setIsLoading(true);
 		await addDoc(messagesCollectionRef, {
@@ -198,11 +215,12 @@ function ChatRoom() {
 			createdAt: serverTimestamp(),
 			uid,
 			photoURL,
+			displayName,
 		});
 		setIsLoading(false);
 		setFormValue("");
 		setTextareaRowsNumber(1);
-		scrollingVisibleTrick.current.scrollIntoView({ behavior: "smooth" });
+		//scrollingVisibleTrick.current.scrollIntoView({ behavior: "smooth" });
 	};
 
 	const changeTextArea = (e) => {
@@ -221,12 +239,16 @@ function ChatRoom() {
 	};
 
 	const keyDownTextArea = (e) => {
+		if ((e.key === " " || e.key === "Enter") && e.target.value.trim() === "") {
+			e.preventDefault();
+			return;
+		}
 		if (e.key === "Enter" && !e.shiftKey) sendMessage(e);
 	};
 
 	return (
 		<>
-			<main style={{ position: "relative" }}>
+			<main style={{ position: "relative", top: "15vh" }}>
 				{messages &&
 					messages
 						.map((msg) => msg && <ChatMessage key={msg.id} message={msg} />)
@@ -277,15 +299,24 @@ function ChatRoom() {
 }
 
 function ChatMessage({ message }) {
-	const { text, uid, photoURL } = message;
+	const { text, uid, photoURL, displayName } = message;
 
 	if (auth) {
 		const messageClass = auth.currentUser.uid === uid ? "sent" : "received";
 
 		return (
-			<div className={`message ${messageClass}`}>
+			<div
+				className={`message ${messageClass}`}
+				onContextMenu={(e) => {
+					e.preventDefault();
+					alert("presionado menu contextual");
+				}}
+			>
 				<img src={photoURL} alt="User" />
-				<p>{text}</p>
+				<div className="message-text-container">
+					<p className="message-owner-name">{displayName}</p>
+					<p className="message-text">{text}</p>
+				</div>
 			</div>
 		);
 	}

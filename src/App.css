@@ -23,6 +23,26 @@ html {
   height: auto;
 } */
 
+.App-header {
+  height: 15vh;
+  width: 100%;
+  max-width: 550px;
+  background-color: rgb(240, 240, 240);
+  position: fixed;
+  top: 0;
+  left: auto;
+  border-bottom: thin solid black;
+  z-index: 10;
+  padding: .5rem 1rem;
+}
+
+h1 *{
+  font-size: 1.5rem;
+  margin: 0;
+  width: fit-content;
+  height: fit-content;
+}
+
 .loader {
   position: fixed;
   top: 0;
@@ -36,15 +56,18 @@ html {
 }
 
 .main-area {
-  /*position: relative;
-  top: 0;
-  left: 0; */
   width: 100%;
   height: 100vh;
-  overflow: hidden initial;
+  overflow: hidden scroll;
   max-width: 550px;
   margin-left: auto;
   margin-right: auto;
+  background-image: url("../src/assets/backgroud-react-firebase1.png");
+  background-size: cover;
+  background-attachment: fixed;
+  background-blend-mode: color;
+  background-position: center center;
+  /* backdrop-filter: blur(1rem); */
 
 }
 
@@ -52,28 +75,55 @@ html {
   display: flex;
   gap: 0.2rem;
   align-items: flex-start;
+  margin-top: 0.5rem;
 }
 
 .message.sent {
   flex-direction: row-reverse;
   padding-right: 0.5rem;
+  margin-right: 0;
 }
 
 .message.received {
   flex-direction: row;
   padding-left: 0.5rem;
+  margin-left: 0;
 }
 
-.message p {
+.message .message-text {
   padding: 0.1rem 0.4rem;
   border-radius: 0.7rem;
   max-width: 80%;
+  min-width: 100px;
   width: fit-content;
   height: auto;
   overflow-wrap: break-word;
   box-shadow: 0.1rem 0.1rem 0.2rem rgba(0, 0, 0, 0.25);
   font-size: 0.9rem;
   white-space: pre-line;
+  margin-top: 0;
+}
+
+.message .message-text-container {
+  margin: 0;
+  width: fit-content;
+  display: flex;
+  flex-direction: column;
+}
+
+.sent .message-text-container {
+  align-items: flex-end;
+}
+
+.received .message-text-container {
+  align-items: flex-start;
+}
+
+.message .message-owner-name {
+  font-size: 0.7rem;
+  background-color: transparent;
+  margin: 0.1rem 0;
+  width: fit-content;
 }
 
 .message img {
@@ -83,12 +133,12 @@ html {
   box-shadow: 0.1rem 0.1rem 0.2rem rgba(0, 0, 0, 0.25);
 }
 
-.sent p {
+.sent .message-text{
   background-color: rgba(220, 248, 198, 0.8);
   border-top-right-radius: 0;
 }
 
-.received p {
+.received .message-text {
   background-color: rgba(255, 255, 255, 0.8);
   border-top-left-radius: 0;
 }
@@ -148,6 +198,7 @@ html {
   position: fixed;
   top: 1rem;
   right: 1rem;
+  z-index: 20;
 }
 
 /* .sign-in-btn {
@@ -169,7 +220,6 @@ html {
 .write-area-container {
   padding: 1.5rem;
   position:fixed;
-  left: center;
   bottom: 0;
   width: 100%;
   display: flex;
