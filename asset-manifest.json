@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/static/css/main.d7e1097f.css",
-    "main.js": "/static/js/main.d9672c0c.js",
-    "static/js/787.819b0053.chunk.js": "/static/js/787.819b0053.chunk.js",
-    "static/media/backgroud-react-firebase1.png": "/static/media/backgroud-react-firebase1.dab2db2de6625729923d.png",
-    "index.html": "/index.html",
-    "main.d7e1097f.css.map": "/static/css/main.d7e1097f.css.map",
-    "main.d9672c0c.js.map": "/static/js/main.d9672c0c.js.map",
-    "787.819b0053.chunk.js.map": "/static/js/787.819b0053.chunk.js.map"
+    "main.css": "/react-firebase-chat/static/css/main.2620cc32.css",
+    "main.js": "/react-firebase-chat/static/js/main.7effae6e.js",
+    "static/js/787.819b0053.chunk.js": "/react-firebase-chat/static/js/787.819b0053.chunk.js",
+    "static/media/backgroud-react-firebase1.png": "/react-firebase-chat/static/media/backgroud-react-firebase1.dab2db2de6625729923d.png",
+    "index.html": "/react-firebase-chat/index.html",
+    "main.2620cc32.css.map": "/react-firebase-chat/static/css/main.2620cc32.css.map",
+    "main.7effae6e.js.map": "/react-firebase-chat/static/js/main.7effae6e.js.map",
+    "787.819b0053.chunk.js.map": "/react-firebase-chat/static/js/787.819b0053.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.d7e1097f.css",
-    "static/js/main.d9672c0c.js"
+    "static/css/main.2620cc32.css",
+    "static/js/main.7effae6e.js"
   ]
 }
