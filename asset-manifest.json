@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/static/css/main.d7e1097f.css",
+    "main.js": "/static/js/main.d9672c0c.js",
+    "static/js/787.819b0053.chunk.js": "/static/js/787.819b0053.chunk.js",
+    "static/media/backgroud-react-firebase1.png": "/static/media/backgroud-react-firebase1.dab2db2de6625729923d.png",
+    "index.html": "/index.html",
+    "main.d7e1097f.css.map": "/static/css/main.d7e1097f.css.map",
+    "main.d9672c0c.js.map": "/static/js/main.d9672c0c.js.map",
+    "787.819b0053.chunk.js.map": "/static/js/787.819b0053.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.d7e1097f.css",
+    "static/js/main.d9672c0c.js"
+  ]
+}
