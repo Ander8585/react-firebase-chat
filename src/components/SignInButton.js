@@ -16,7 +16,7 @@ function SignInButton({ auth }) {
 				//const token = credential.accessToken;
 				// The signed-in user info.
 				const user = result.user;
-				console.log(user.displayName);
+				console.log(`Hola ${user.displayName.split(" ")[0]}`);
 				// ...
 			})
 			.catch((error) => {

@@ -1,6 +1,9 @@
 import "./ChatRoom.css";
 import { useEffect, useRef, useState } from "react";
-import { useCollectionData } from "react-firebase-hooks/firestore";
+import {
+	/* useCollectionData, */
+	useCollection,
+} from "react-firebase-hooks/firestore";
 import ChatMessage from "./ChatMessage";
 import Loader from "./Loader";
 import {
@@ -10,7 +13,10 @@ import {
 	orderBy,
 	limit,
 	serverTimestamp,
+	deleteDoc,
+	doc,
 } from "firebase/firestore";
+import ContextMenuMessage from "./ContextMenuMessage";
 
 function ChatRoom({ firestoreDb, auth }) {
 	const messagesCollectionRef = collection(firestoreDb, "messages");
@@ -21,9 +27,11 @@ function ChatRoom({ firestoreDb, auth }) {
 		limit(50)
 	);
 
-	const [messages, /* loading, */ errorStore] = useCollectionData(q, {
+	/* const [messages, loading, errorStore] = useCollectionData(q, {
 		idField: "id",
-	});
+	}); */
+	const [messageCollection, /* loading, */ errorStore] = useCollection(q);
+
 	const [isLoading, setIsLoading] = useState(false);
 	const [textareaRowsNumber, setTextareaRowsNumber] = useState(1);
 	const [formValue, setFormValue] = useState("");
@@ -36,14 +44,12 @@ function ChatRoom({ firestoreDb, auth }) {
 			block: "end",
 			behavior: "smooth",
 		});
-	}, [messages]);
+	}, [messageCollection]);
 
 	const sendMessage = async (e) => {
 		e.preventDefault();
 		if (!formValue.trim()) return;
 		const { uid, photoURL, displayName } = auth.currentUser;
-
-		console.log(auth.currentUser);
 
 		setIsLoading(true);
 		await addDoc(messagesCollectionRef, {
@@ -82,14 +88,37 @@ function ChatRoom({ firestoreDb, auth }) {
 		if (e.key === "Enter" && !e.shiftKey) sendMessage(e);
 	};
 
+	const contextMenuActionDel = async (e, data, target) => {
+		try {
+			await deleteDoc(
+				doc(firestoreDb, "messages", target.getAttribute("data-messageid"))
+			);
+		} catch (error) {
+			console.log(error);
+		}
+
+		//console.log(messageCollection);
+	};
+
+	const contextMenuActionCopy = (e, data, target) => {
+		navigator.clipboard.writeText(target.innerText);
+	};
+
 	return (
 		<>
-			<main style={{ position: "relative", top: "15vh" }}>
-				{messages &&
-					messages
+			<main style={{ position: "relative", top: "4.5rem" }}>
+				{messageCollection &&
+					messageCollection.docs
 						.map(
-							(msg) =>
-								msg && <ChatMessage auth={auth} key={msg.id} message={msg} />
+							(doc, index) =>
+								doc && (
+									<ChatMessage
+										auth={auth}
+										key={doc.id}
+										messageId={doc.id}
+										message={doc.data()}
+									/>
+								)
 						)
 						.reverse()}
 				{errorStore && <ChatMessage auth={auth} message={errorStore} />}
@@ -116,10 +145,10 @@ function ChatRoom({ firestoreDb, auth }) {
 
 					<button type="submit">
 						<svg
-							ariaHidden="true"
+							aria-hidden="true"
 							focusable="false"
-							dataPrefix="fas"
-							dataIcon="paper-plane"
+							data-prefix="fas"
+							data-icon="paper-plane"
 							className="svg-inline--fa fa-paper-plane fa-w-16"
 							role="img"
 							xmlns="http://www.w3.org/2000/svg"
@@ -132,6 +161,9 @@ function ChatRoom({ firestoreDb, auth }) {
 						</svg>
 					</button>
 				</form>
+				<ContextMenuMessage
+					contextMenuAction={[contextMenuActionDel, contextMenuActionCopy]}
+				/>
 			</div>
 		</>
 	);
