@@ -24,7 +24,7 @@ function ChatRoom({ firestoreDb, auth }) {
 	const q = query(
 		messagesCollectionRef,
 		orderBy("createdAt", "desc"),
-		limit(50)
+		limit(100)
 	);
 
 	/* const [messages, loading, errorStore] = useCollectionData(q, {

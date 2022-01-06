@@ -26,7 +26,7 @@ function SignOutButton({ auth, firestoreDb }) {
 					const q = query(
 						messagesCollectionRef,
 						orderBy("createdAt", "desc"),
-						limit(50)
+						limit(100)
 					);
 					const docs = await getDocs(q);
 					delaySignOut = (1000 * docs.docs.length) / 5;
